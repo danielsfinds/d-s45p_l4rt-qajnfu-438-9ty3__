@@ -653,11 +653,11 @@ async function loadItems(){
     const snapshot = await getDocs(collection(db, 'items'));
     items = snapshot.docs.map(d => d.data());
     if(items.length === 0 && typeof SEED_ITEMS !== 'undefined' && SEED_ITEMS.length > 0){
+      showToast('Loading starter items…');
       const { doc, setDoc } = firestoreFns;
-      for(const item of SEED_ITEMS){
-        await setDoc(doc(db, 'items', item.id), item);
-      }
+      await Promise.all(SEED_ITEMS.map(item => setDoc(doc(db, 'items', item.id), item)));
       items = SEED_ITEMS;
+      showToast('Starter items loaded');
     }
   }catch(e){
     items = [];
